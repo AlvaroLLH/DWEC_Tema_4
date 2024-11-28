@@ -1,0 +1,12 @@
+/* Estilo para el contenido del formulario */
+.formulario-contenido {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 320px;
+}
+
+/* Estilo para el botón del formulario */
+.formulario-fila button {
+    margin: 8px 0;
+    width: 100%;
+}
