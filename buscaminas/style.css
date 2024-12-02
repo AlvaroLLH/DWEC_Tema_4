@@ -1,0 +1,43 @@
+/* Estilos básicos para la página */
+body {
+    font-family: Arial, sans-serif; /* Tipo de fuente */
+    text-align: center; /* Centrado del contenido */
+}
+
+/* Estilo del formulario */
+#form {
+    margin: 20px; /* Espaciado del formulario */
+}
+
+/* Estilo de los inputs del formulario */
+input {
+    margin: 5px; /* Espaciado entre los inputs */
+}
+
+/* Estilo del tablero del juego */
+#tablero {
+    display: grid; /* Usamos CSS grid para organizar el tablero */
+    margin-top: 20px; /* Espaciado superior */
+    justify-content: center; /* Centrado del tablero */
+}
+
+/* Estilo de cada celda en el tablero */
+.celda {
+    width: 30px; /* Ancho de la celda */
+    height: 30px; /* Alto de la celda */
+    border: 1px solid #ccc; /* Borde alrededor de la celda */
+    display: inline-block; /* Mostramos las celdas en línea */
+    text-align: center; /* Centrado el texto */
+    line-height: 30px; /* Centramos verticalmente el texto */
+    cursor: pointer; /* Cambiamos el cursor cuando se pasa por encima */
+}
+
+/* Estilo para las celdas reveladas */
+.celda.revelada {
+    background-color: #ddd; /* Fondo gris cuando la celda está revelada */
+}
+
+/* Estilo para celdas marcadas como mina */
+.celda.marcada {
+    background-color: #f7b2b2; /* Fondo rojo cuando la celda está marcada */
+}
