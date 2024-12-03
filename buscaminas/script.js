@@ -6,7 +6,7 @@ let numFilas, numColumnas, numMinas; // Variables para almacenar filas, columnas
 let finJuego = false; // Variable para saber si el juego ha terminado
 
 // Función para inicializar el tablero
-function initializeBoard(filas, columnas, minas) {
+function inicializarTablero(filas, columnas, minas) {
     
     tablero = []; // Inicializamos el tablero vacío
     numFilas = filas;
@@ -71,7 +71,7 @@ function initializeBoard(filas, columnas, minas) {
 
 // Función para renderizar el tablero en la pantalla
 function renderTablero() {
-    const tableroElement = document.getElementById('board');
+    const tableroElement = document.getElementById('tablero');
     tableroElement.innerHTML = ''; // Limpiamos el tablero antes de renderizar
     tableroElement.style.gridTemplateColumns = `repeat(${numColumnas}, 30px)`; // Establecemos las columnas del grid
 
@@ -79,7 +79,7 @@ function renderTablero() {
     for(let i = 0; i < numFilas; i++) {
         for(let j = 0; j < numColumnas; j++) {
             const celda = document.createElement('div'); // Creamos un div para la celda
-            celda.classList.add('cell');
+            celda.classList.add('celda');
             celda.dataset.fila = i; // Guardamos las coordenadas de la celda
             celda.dataset.columna = j;
 
@@ -114,8 +114,8 @@ function clickEnCelda(event) {
     if(finJuego) return; // Si el juego ha terminado, no hacer nada
 
     // Declaración de constantes
-    const fila = event.target.dataset.row;
-    const columna = event.target.dataset.col;
+    const fila = parseInt(event.target.dataset.fila);
+    const columna = parseInt(event.target.dataset.columna);
     const celda = tablero[fila][columna];
 
     if(celda.revelada || celda.marcada) return; // No hacer nada si la celda ya está revelada o marcada
@@ -145,8 +145,8 @@ function clickDerechoEnCelda(event) {
     if(finJuego) return; // Si el juego ha terminado, no hacer nada
 
     // Declaración de constantes
-    const fila = event.target.dataset.row;
-    const columna = event.target.dataset.col;
+    const fila = parseInt(event.target.dataset.fila);
+    const columna = parseInt(event.target.dataset.columna);
     const celda = tablero[fila][columna];
 
     if(!celda.revelada) { // Solo permitimos marcar si la celda no está revelada
@@ -190,8 +190,20 @@ function revelarCeldas() {
 }
 
 // Función para iniciar el juego cuando el usuario hace click en el botón
-document.getElementById('startBtn').addEventListener('click', () => {
+document.getElementById('empezarBtn').addEventListener('click', () => {
 
     // Declaración de constantes
-    const fila = parseInt(document.getElementById('filas').value); // Filas elegidas
+    const filas = parseInt(document.getElementById('filas').value); // Filas elegidas
+    const columnas = parseInt(document.getElementById('columnas').value); // Columnas elegidas
+    const minas = parseInt(document.getElementById('minas').value); // Minas elegidas
+
+    // Verificamos que el número de minas no sea mayor o igual que el número total de celdas
+    if(minas >= filas * columnas) {
+        alert("El número de minas no puede ser mayor o igual al número de casillas.");
+        return;
+    }
+
+    // Inicializamos el tablero con los valores dados
+    inicializarTablero(filas, columnas, minas);
+    
 });
