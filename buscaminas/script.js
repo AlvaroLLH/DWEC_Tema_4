@@ -83,7 +83,115 @@ function renderTablero() {
             celda.dataset.fila = i; // Guardamos las coordenadas de la celda
             celda.dataset.columna = j;
 
-            // Si la celda est
+            // Si la celda está marcada, agregamos la clase 'marcada'
+            if(tablero[i][j].marcada) {
+                celda.classList.add('marcada');
+            }
+
+            // Si la celda está revelada, mostramos el contenido
+            if(tablero[i][j].revelada) {
+                celda.classList.add('revelada');
+
+                if(tablero[i][j].esMina) {
+                    celda.innerHTML = '💣'; // Si tiene mina, mostramos una bomba
+
+                } else if (tablero[i][j].adyacentesMinas > 0) {
+                    celda.innerHTML = tablero[i][j].adyacentesMinas; // Mostramos número de minas adyacentes
+                }
+            }
+
+            // Añadimos los manejadores de eventos
+            celda.addEventListener('click', clickEnCelda); // Click izquierdo (descubrir)
+            celda.addEventListener('contextmenu', clickDerechoEnCelda); // Click derecho (marcar, desmarcar)
+            tableroElement.appendChild(celda); // Añadimos la celda al tablero
         }
     }
 }
+
+// Función para manejar el click izquierdo en una celda
+function clickEnCelda(event) {
+    
+    if(finJuego) return; // Si el juego ha terminado, no hacer nada
+
+    // Declaración de constantes
+    const fila = event.target.dataset.row;
+    const columna = event.target.dataset.col;
+    const celda = tablero[fila][columna];
+
+    if(celda.revelada || celda.marcada) return; // No hacer nada si la celda ya está revelada o marcada
+    celda.revelada = true; // Revelamos la celda
+
+    if(celda.esMina) {
+        alert("¡Perdiste! Hiciste clic en una mina.");
+        finJuego = true; // Fin del juego
+        revelarCeldas(); // Revelamos todas las celdas
+
+    } else {
+
+        if(celda.adyacentesMinas === 0) {
+
+            // Si no hay minas adyacentes, revelamos las celdas cercanas
+            revelarCeldasAdyacentes(fila,columna);
+        }
+    }
+    renderTablero(); // Volver a renderizar el tablero
+}
+
+// Función para manejar el click derecho en una celda (marcar/desmarcar)
+function clickDerechoEnCelda(event) {
+    
+    event.preventDefault(); // Prevenir el menú contextual del navegador
+
+    if(finJuego) return; // Si el juego ha terminado, no hacer nada
+
+    // Declaración de constantes
+    const fila = event.target.dataset.row;
+    const columna = event.target.dataset.col;
+    const celda = tablero[fila][columna];
+
+    if(!celda.revelada) { // Solo permitimos marcar si la celda no está revelada
+        celda.marcada = !celda.marcada; // Alternamos el estado de marcado
+        renderTablero(); // Volvemos a renderizar el tablero
+    }
+}
+
+// Función para revelar las celdas adyacentes si están vacías
+function revelarCeldasAdyacentes(fila, columna) {
+
+    for(let x = -1; x <= 1; x++) {
+        for(let y = -1; y <= 1; y++) {
+            const r = parseInt(fila) + x;
+            const c = parseInt(columna) + y;
+
+            if(r >= 0 && r < numFilas && c >= 0 && c < numColumnas) {
+                const celdaAdyacente = tablero[r][c];
+
+                if(!celdaAdyacente.revelada && !celdaAdyacente.esMina) {
+                    celdaAdyacente.revelada = true;
+
+                    if(celdaAdyacente.adyacentesMinas === 0) {
+                        revelarCeldasAdyacentes(r, c); // Recursión para celdas vacías
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Función para revelar todas las celdas al final del juego (cuando se pierde)
+function revelarCeldas() {
+    
+    for(let i = 0; i < numFilas; i++) {
+        for(let j = 0; j < numColumnas; j++) {
+            tablero[i][j].revelada = true; // Revelamos todas las celdas
+        }
+    }
+    renderTablero(); // Renderizamos el tablero con todas las celdas reveladas
+}
+
+// Función para iniciar el juego cuando el usuario hace click en el botón
+document.getElementById('startBtn').addEventListener('click', () => {
+
+    // Declaración de constantes
+    const fila = parseInt(document.getElementById('filas').value); // Filas elegidas
+});
